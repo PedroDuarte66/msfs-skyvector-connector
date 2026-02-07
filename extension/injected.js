@@ -10,7 +10,7 @@ function setMapIcon(latlon, heading) {
 
   // --- CONVERSIÓN DE HEADING (Radianes a Grados) ---
   var headingGrados = (heading * 180) / Math.PI;
-  console.log("Rumbo en grados:", headingGrados);
+  // console.log("Rumbo en grados:", headingGrados);
 
   var img = document.getElementById("movingAirplane");
   if (!img) {

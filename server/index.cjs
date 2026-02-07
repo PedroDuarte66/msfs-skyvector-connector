@@ -64,6 +64,14 @@ async function startSimConnection() {
 
     async function connectSim() {
       if (intervalId) clearInterval(intervalId);
+
+      // LIMPIEZA: Si ya existía una instancia de la API, intenta cerrarla antes de crear una nueva
+      if (api && typeof api.disconnect === "function") {
+        try {
+          api.disconnect();
+        } catch (e) {}
+      }
+
       try {
         api = new MSFS_API();
         await api.connect({ autoReconnect: true });
@@ -101,6 +109,11 @@ async function startSimConnection() {
 
 // --- 5. RUTAS ---
 app.get("/get", (req, res) => {
+  res.set({
+    "Cache-Control": "no-store, no-cache, must-revalidate, private",
+    Pragma: "no-cache", // Para compatibilidad con navegadores muy antiguos
+    Expires: "0", // Marca la respuesta como expirada de inmediato
+  });
   res.json({
     coordinates: [planeData.latitude, planeData.longitude],
     heading: planeData.heading, // <-- Lo enviamos a la extensión

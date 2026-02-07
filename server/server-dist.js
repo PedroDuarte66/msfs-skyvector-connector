@@ -23939,6 +23939,12 @@ async function startSimConnection() {
     const { MSFS_API } = msfsModule;
     async function connectSim() {
       if (intervalId) clearInterval(intervalId);
+      if (api && typeof api.disconnect === "function") {
+        try {
+          api.disconnect();
+        } catch (e) {
+        }
+      }
       try {
         api = new MSFS_API();
         await api.connect({ autoReconnect: true });
@@ -23971,6 +23977,13 @@ async function startSimConnection() {
   }
 }
 app.get("/get", (req, res) => {
+  res.set({
+    "Cache-Control": "no-store, no-cache, must-revalidate, private",
+    Pragma: "no-cache",
+    // Para compatibilidad con navegadores muy antiguos
+    Expires: "0"
+    // Marca la respuesta como expirada de inmediato
+  });
   res.json({
     coordinates: [planeData.latitude, planeData.longitude],
     heading: planeData.heading,
