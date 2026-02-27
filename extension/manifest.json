@@ -13,10 +13,6 @@
       "js": [ "moving-map-content.js" ]
     }
   ],
-  "options_ui": {
-    "page": "options.html",
-    "open_in_tab": false
-  },
     "web_accessible_resources": [
     {
       "resources": [ "injected.js", "avion_rojo.png" ],

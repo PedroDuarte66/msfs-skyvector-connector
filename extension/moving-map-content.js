@@ -55,4 +55,4 @@ function getLocation() {
   xhr.send(null);
 }
 
-setInterval(getLocation, 100);
+setInterval(getLocation, 200);
