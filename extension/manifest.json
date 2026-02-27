@@ -1,6 +1,6 @@
 {
   "name": "FS2020 SkyVector Moving Map",
-  "version": "1.0",
+  "version": "1.1",
   "manifest_version": 3,
   "description": "Skyvector Moving Map Extension",
   "permissions": [ "tabs","storage" ],
@@ -13,6 +13,7 @@
       "js": [ "moving-map-content.js" ]
     }
   ],
+  
     "web_accessible_resources": [
     {
       "resources": [ "injected.js", "avion_rojo.png" ],

@@ -27,7 +27,15 @@
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      margin-bottom: 5px; /* Espacio entre botones */
+      transition: all 0.3s ease;
     }
+
+    button:disabled {
+      cursor: not-allowed;
+      background-color: #6c757d; /* Color grisáceo */
+    }
+
     button:hover {
       background-color: #0056b3;
     }
@@ -46,19 +54,91 @@
       background-color: #f8d7da;
       color: #721c24;
     }
+
+    /* --- NUEVOS ESTILOS PARA EL DESLIZADOR --- */
+    .row-container {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      margin-bottom: 10px;
+      margin-left: 8px;
+    }
+    .switch-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .switch-label {
+      font-weight: bold;
+      /* font-size: 10px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      color: #555; */
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #28a745; /* Verde al activar */
+    }
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
   </style>
 </head>
 <body>
   <h2>MSFS2020 Moving Map</h2>
   
-  <label>Server Port:</label>
-  <input type="number" id="portNumber" value="8001" min="1000" max="65535">
-  
+  <div class="row-container">
+    <!-- Switch a la izquierda -->
+    <div class="switch-group">
+      <span class="switch-label">Local</span>
+      <label class="switch">
+        <input type="checkbox" id="localToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <!-- Input a la derecha -->
+    <div style="flex-grow: 1;">
+      <label>Server Address:</label>
+      <input type="text" id="serverAddress" value="localhost:8001" placeholder="ej: 192.168.1.15:8001">
+    </div>
+  </div>
+
   <button id="saveBtn">Save Settings</button>
   <button id="toggleBtn">Enable Tracking</button>
-  <!-- <button id="exitBtn" style="background-color: #dc3545; margin-top: 10px;">Apagar Servidor</button> -->
   
   <div id="status" class="disconnected">Disconnected</div>
+
+  <script src="popup.js"></script>
 </body>
-<script src="popup.js"></script>
 </html>

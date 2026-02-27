@@ -1,7 +1,51 @@
+// Localiza el nuevo elemento
+const localToggle = document.getElementById("localToggle");
+const serverInput = document.getElementById("serverAddress");
+const saveBtn = document.getElementById("saveBtn");
+
+// Función auxiliar para habilitar el botón de guardado
+function markAsUnsaved() {
+  saveBtn.disabled = false;
+  saveBtn.style.opacity = "1";
+  saveBtn.textContent = "Save Settings";
+}
+
+serverInput.addEventListener("input", () => {
+  markAsUnsaved(); // Se habilita en cuanto el usuario toca una tecla
+  if (serverInput.value.toLowerCase().includes("localhost")) {
+    localToggle.checked = true;
+  } else {
+    localToggle.checked = false;
+  }
+});
+
+// 3. BOTÓN SAVE: Guardar y Deshabilitar
+saveBtn.addEventListener("click", () => {
+  const address = serverInput.value;
+  chrome.storage.sync.set({ serverAddress: address }, () => {
+    // Efecto visual de guardado
+    saveBtn.disabled = true;
+    saveBtn.style.opacity = "0.5";
+    saveBtn.textContent = "Settings Saved ✓";
+    console.log("Saved: " + address);
+  });
+});
+
+// Al cambiar el switch
+localToggle.addEventListener("change", () => {
+  markAsUnsaved(); // Se habilitará porque el valor cambió
+  if (localToggle.checked) {
+    serverInput.value = "localhost:8001";
+  } else {
+    if (serverInput.value === "localhost:8001") serverInput.value = "";
+  }
+});
+
+// Al guardar
 document.getElementById("saveBtn").addEventListener("click", () => {
-  const port = document.getElementById("portNumber").value;
-  chrome.storage.sync.set({ portNumber: port }, () => {
-    alert("Port saved: " + port);
+  const address = document.getElementById("serverAddress").value;
+  chrome.storage.sync.set({ serverAddress: address }, () => {
+    alert("Saved: " + address);
   });
 });
 
@@ -23,18 +67,25 @@ document.getElementById("toggleBtn").addEventListener("click", () => {
   });
 });
 
-// Esto se ejecuta al abrir el popup para cargar el estado guardado
-chrome.storage.sync.get(["trackingEnabled", "portNumber"], (data) => {
+// This runs when you open the popup
+chrome.storage.sync.get(["trackingEnabled", "serverAddress"], (data) => {
   const isEnabled = data.trackingEnabled || false;
+  const address = data.serverAddress || "localhost:8001";
+
+  serverInput.value = address;
+
+  // Si la dirección es localhost, ponemos el switch en ON
+  if (address.includes("localhost")) {
+    localToggle.checked = true;
+  }
 
   document.getElementById("toggleBtn").textContent = isEnabled
     ? "Disable Tracking"
     : "Enable Tracking";
-
-  document.getElementById("portNumber").value = data.portNumber || "8001";
-
-  // Actualizar el cuadro de estado al abrir
   updateStatus(isEnabled);
+  // Al abrir el popup, el botón de guardar está deshabilitado
+  saveBtn.disabled = true;
+  saveBtn.style.opacity = "0.5";
 });
 
 // Esta es la función que cambia los colores y el texto del cuadro inferior
@@ -48,18 +99,3 @@ function updateStatus(enabled) {
     status.textContent = "❌ Tracking Inactive";
   }
 }
-
-// se avia añadido un botor para activar y desactivar el servidor pero no hace falta
-// ya que el servidor se inicia desde su propi archivo y se detiene desde la bandeja del systema.
-// document.getElementById("exitBtn").addEventListener("click", () => {
-//   if (
-//     confirm("¿Estás seguro de que quieres cerrar el servidor por completo?")
-//   ) {
-//     fetch("http://localhost:8001/exit")
-//       .then(() => {
-//         alert("Servidor cerrado.");
-//         window.close(); // Cierra el popup
-//       })
-//       .catch((err) => alert("El servidor ya estaba cerrado o no responde."));
-//   }
-// });
